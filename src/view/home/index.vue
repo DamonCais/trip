@@ -24,12 +24,11 @@
                         <span>三亚市</span>
                     </template>
                 </van-cell>
-                <van-cell title="请选择出游日期" is-link>
+                <van-cell title="请选择出游日期" to="/calender" is-link>
                     <template>
-                        2018.05.22
-                        <span style="color:#aaa;">周二</span>
+                        {{offTime|_formatTime}}
+                        <span style="color:#aaa;">{{offTime|getDayByTime}}</span>
                     </template>
-
                 </van-cell>
                 <van-cell @click="show=true" title="请选择出游日期" is-link>
                     <template>
@@ -95,6 +94,12 @@ export default {
       adultNum: 1,
       childrenNum: 0
     };
+  },
+  filters: {
+    getDayByTime(time) {
+      var str = "周" + "日一二三四五六".charAt(new Date(time).getDay());
+      return str;
+    }
   }
 };
 </script>

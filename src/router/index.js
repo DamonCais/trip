@@ -25,6 +25,13 @@ const routes = [{
         meta: { title: 'home', keepAlive: true },
     },
     {
+        path: '/calender',
+        name: 'calender',
+        component: () =>
+            import ('../view/calender'),
+        meta: { title: 'calender', keepAlive: true },
+    },
+    {
         path: '/yachts',
         name: 'yachts',
         component: () =>

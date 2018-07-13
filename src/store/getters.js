@@ -1,5 +1,6 @@
 const getters = {
   language: state => state.app.language,
+  offTime: state => state.app.offTime,
   shoppingmallId: state => state.app.shoppingmallId,
   shoppingCart: state => state.cart.shoppingCart,
   orderEntity: state => state.orders.orderEntity,
