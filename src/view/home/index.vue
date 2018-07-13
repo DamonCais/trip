@@ -44,7 +44,7 @@
         <div>
             <van-cell title="游艇管家" is-link value="更多" />
             <div class="home-guide">
-                <div v-for="i in 10" :key="i" style="width:160px;display:inline-block;">
+                <div @click="toGuide(i)" v-for="i in 10" :key="i" style="width:160px;display:inline-block;">
                     <card />
                 </div>
             </div>
@@ -52,7 +52,7 @@
         <div>
             <van-cell title="景区管家" is-link value="更多" />
             <div class="home-guide">
-                <div v-for="i in 10" :key="i" style="width:160px;display:inline-block;">
+                <div @click="toGuide(i)" v-for="i in 10" :key="i" style="width:160px;display:inline-block;">
                     <card />
                 </div>
             </div>
@@ -94,6 +94,11 @@ export default {
       adultNum: 1,
       childrenNum: 0
     };
+  },
+  methods: {
+    toGuide(i) {
+      console.log(i);
+    }
   },
   filters: {
     getDayByTime(time) {

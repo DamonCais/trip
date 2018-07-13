@@ -18,14 +18,17 @@ Vue.mixin({
         return;
       }
       this.$router.push({ path: `/${item.linkType === 'category' ? 'categories' : item.linkType + 's'}/${item[item.linkType]}` });
+    },
+    toUrl(url) {
+      this.$router.push({ path: url });
     }
   },
   filters: {
     deepGet(value, path) {
       return (!Array.isArray(path) ? path.replace(/\[/g, '.').replace(/\]/g, '').split('.') : path).reduce((o, k) => (o || {})[k], value) || undefined;
     },
-    _formatTime(val) {
-      return formatTime(val);
+    _formatTime(val, option) {
+      return formatTime(val, option);
     },
     yuan(value) {
       return !isNaN(value) ? '¥' + (value / 100).toFixed(2) : value;
@@ -42,7 +45,6 @@ Vue.mixin({
 function formatTime(time, option) {
   // time = +time * 1000
   const d = new Date(time);
-  console.log(d);
   const now = Date.now();
 
   // const diff = (now - d) / 1000;
@@ -61,5 +63,9 @@ function formatTime(time, option) {
   // } else {
   //   return d.getMonth() + 1 + '月' + d.getDate() + '日' + d.getHours() + '时' + d.getMinutes() + '分';
   // }
-  return d.getFullYear() + '.' + (d.getMonth() + 1) + '.' + d.getDate();
+  if (option === 'mmdd') {
+    return (d.getMonth() + 1) + '.' + d.getDate();
+  } else {
+    return d.getFullYear() + '.' + (d.getMonth() + 1) + '.' + d.getDate();
+  }
 }
