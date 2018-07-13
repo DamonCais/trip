@@ -1,38 +1,44 @@
 <template>
-  <div class="calender">
-    <div class="calender-wraper" v-show="showCalender">
-      <div class="calender-mask" @click.stop.prevent="toggle"></div>
-      <div class="calender-content">
-        <ul class="weekday">
-          <li class="weekend">日</li>
-          <li>一</li>
-          <li>二</li>
-          <li>三</li>
-          <li>四</li>
-          <li>五</li>
-          <li class="weekend">六</li>
-        </ul>
-        <div class="area" ref="scroll">
-          <ul class="date">
-            <li class="date-item" v-for="(item, index) in date" :key="index" :data-date="item.month">
-              <h6>{{item.month}}</h6>
-              <ol class="date-day">
-                <li v-for="(dateItem, dateIndex) in item.dateList" :data-time="dateItem.time" :data-disabled="dateItem.disabled" :key="dateIndex" :class="{
+    <div class="calender">
+        <div class="btn" @click="toggle">
+            <span>开始结束日期</span>
+            <!-- <span>{{startTime | date(2)}}</span>
+      <span>{{endTime | date(2)}}</span> -->
+        </div>
+        <transition name="fade">
+            <div class="calender-wraper" v-show="showCalender">
+                <div class="calender-mask" @click.stop.prevent="toggle"></div>
+                <div class="calender-content">
+                    <ul class="weekday">
+                        <li class="weekend">日</li>
+                        <li>一</li>
+                        <li>二</li>
+                        <li>三</li>
+                        <li>四</li>
+                        <li>五</li>
+                        <li class="weekend">六</li>
+                    </ul>
+                    <div class="area" ref="scroll">
+                        <ul class="date">
+                            <li class="date-item" v-for="(item, index) in date" :key="index" :data-date="item.month">
+                                <h6>{{item.month}}</h6>
+                                <ol class="date-day">
+                                    <li v-for="(dateItem, dateIndex) in item.dateList" :data-time="dateItem.time" :data-disabled="dateItem.disabled" :key="dateIndex" :class="{
                     weekend: dateIndex % 7 === 0 || dateIndex % 7 === 6,
                     past: dateItem.disabled === 'disabled',
                     start: startTime === dateItem.time,
                     end: endTime === dateItem.time,
                     between: dateItem.time > startTime && dateItem.time < endTime
                   }" @click="handleClick">{{dateItem.text}}</li>
-              </ol>
-            </li>
-          </ul>
-          <div style="height:80px;"></div>
-          <h6 class="fixed-title" v-show="showFixedTitle" ref="fixed">{{fixedTitle}}</h6>
-        </div>
-      </div>
+                                </ol>
+                            </li>
+                        </ul>
+                        <h6 class="fixed-title" v-show="showFixedTitle" ref="fixed">{{fixedTitle}}</h6>
+                    </div>
+                </div>
+            </div>
+        </transition>
     </div>
-  </div>
 </template>
 
 <script>
@@ -41,7 +47,7 @@ const h = 28;
 export default {
   data() {
     return {
-      showCalender: true,
+      showCalender: false,
       startTime: -1,
       endTime: -1,
       maxDay: 12,
@@ -68,16 +74,16 @@ export default {
       if (newVal) {
         //   this.initScroll()
       }
+    },
+    diff(newVal) {
+      // 如果 滚动的差值 在 0 - h 的时候就设置差值，否则为 0
+      const fixedTop = newVal > 0 && newVal < h ? newVal - h : 0;
+      if (this.fixedTop === fixedTop) {
+        return;
+      }
+      this.fixedTop = fixedTop;
+      this.$refs.fixed.style.transform = `translate3d(0, ${fixedTop}px, 0)`;
     }
-    // diff(newVal) {
-    //   // 如果 滚动的差值 在 0 - h 的时候就设置差值，否则为 0
-    //   const fixedTop = newVal > 0 && newVal < h ? newVal - h : 0;
-    //   if (this.fixedTop === fixedTop) {
-    //     return;
-    //   }
-    //   this.fixedTop = fixedTop;
-    //   this.$refs.fixed.style.transform = `translate3d(0, ${fixedTop}px, 0)`;
-    // }
   },
   computed: {
     fixedTitle() {
@@ -133,33 +139,29 @@ export default {
         return;
       }
       const time = dataset.time * 1;
-      this.startTime = time;
-      console.log(time);
-
-      console.log(new Date(time));
-      // if (
-      //   this.startTime === -1 ||
-      //   (time <= this.startTime && this.endTime === -1)
-      // ) {
-      //   // 设定开始日期
-      //   this.startTime = time;
-      //   // this.$vux.toast.text("请选择结束时间！");
-      // } else if (time > this.startTime && this.endTime === -1) {
-      //   // 设定结束日期并计算差值
-      //   let inteval = (time - this.startTime) / 1000;
-      //   inteval = Math.floor(inteval / 86400);
-      //   if (inteval + 1 > this.maxDay) {
-      //     this.$vux.toast.text("最多只能投保 12 天");
-      //     return;
-      //   }
-      //   this.endTime = time;
-      //   this.$vux.toast.text(`您已投保 ${inteval + 1} 天！`);
-      // } else if (this.startTime !== -1 && this.endTime !== -1) {
-      //   // 再次设定开始日期
-      //   this.startTime = time;
-      //   this.endTime = -1;
-      //   this.$vux.toast.text("请选择结束时间！");
-      // }
+      if (
+        this.startTime === -1 ||
+        (time <= this.startTime && this.endTime === -1)
+      ) {
+        // 设定开始日期
+        this.startTime = time;
+        this.$vux.toast.text("请选择结束时间！");
+      } else if (time > this.startTime && this.endTime === -1) {
+        // 设定结束日期并计算差值
+        let inteval = (time - this.startTime) / 1000;
+        inteval = Math.floor(inteval / 86400);
+        if (inteval + 1 > this.maxDay) {
+          this.$vux.toast.text("最多只能投保 12 天");
+          return;
+        }
+        this.endTime = time;
+        this.$vux.toast.text(`您已投保 ${inteval + 1} 天！`);
+      } else if (this.startTime !== -1 && this.endTime !== -1) {
+        // 再次设定开始日期
+        this.startTime = time;
+        this.endTime = -1;
+        this.$vux.toast.text("请选择结束时间！");
+      }
     },
     toggle() {
       this.showCalender = !this.showCalender;
@@ -167,7 +169,6 @@ export default {
     // 创建一个月的日历
     getDay(j) {
       let oDate = new Date();
-
       oDate.setMonth(oDate.getMonth() + j);
       const year = oDate.getFullYear();
       const month = oDate.getMonth();
@@ -185,10 +186,6 @@ export default {
       // 日期
       for (let i = 1; i <= totalDay; i++) {
         let time = new Date();
-        // time.setHours(0);
-        // time.setMinutes(0);
-        // time.setSeconds(0);
-        // time.setMilliseconds(0);
         time.setFullYear(year, month, i);
         if (time.getTime() < new Date().getTime()) {
           dateList.push({
@@ -219,20 +216,9 @@ export default {
     },
     // 创建两年的日历
     getAllDay() {
-      for (let i = 0; i < 12; i++) {
+      for (let i = 0; i < 24; i++) {
         this.getDay(i);
       }
-      let arr = this.date[0].dateList.filter(
-        time => time.disabled === "undisabled"
-      );
-      if (arr.length >= 2) {
-        this.startTime = arr[1].time;
-      } else {
-        this.startTime = this.date[0].dateList.filter(
-          time => time.disabled === "undisabled"
-        )[0];
-      }
-      console.log(this.date);
     },
     toDub(n) {
       return n >= 10 ? "" + n : "0" + n;
@@ -276,7 +262,7 @@ export default {
 .calender {
   @diff: 2rem;
   width: 100vw;
-  // height: calc(~"100vh - @{diff}");
+  height: calc(~"100vh - @{diff}");
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   .btn {
@@ -314,11 +300,10 @@ export default {
   }
   &-content {
     position: absolute;
-    top: 0;
     bottom: 0;
     left: 0;
     width: 100vw;
-    // height: 20rem;
+    height: 20rem;
     background: #fff;
   }
   .weekday {
@@ -340,10 +325,8 @@ export default {
   .area {
     @diff: 2rem;
     position: relative;
-    // height: 18rem;
-    height: 100%;
+    height: 18rem;
     overflow-y: auto;
-
     -webkit-overflow-scrolling: touch;
     .fixed-title {
       position: absolute;
@@ -369,7 +352,6 @@ export default {
         justify-content: center;
         font-size: 0.6rem;
         border-bottom: 1px solid @border-color;
-        margin: 0;
       }
     }
     &-day {
@@ -396,7 +378,7 @@ export default {
           color: #fff;
         }
         &.start {
-          // border-radius: 2rem 0 0 2rem;
+          border-radius: 2rem 0 0 2rem;
         }
         &.end {
           border-radius: 0 2rem 2rem 0;

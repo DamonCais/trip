@@ -1,4 +1,4 @@
-import './common/rem';
+// import './common/rem';
 import Vue from 'vue';
 import App from './App.vue';
 import { router } from './router/index.js';
@@ -8,7 +8,7 @@ import store from './store';
 import Vant from 'vant';
 import 'vant/lib/vant-css/index.css';
 
-import '@/css/reset.scss';
+// import '@/css/reset.scss';
 import '@/css/animation.scss';
 
 Vue.use(Vant);

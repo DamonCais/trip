@@ -110,16 +110,17 @@ export default {
     padding: 0 10px;
     input {
       width: 100%;
-      height: 0.89rem;
+      height: 30px;
       background-color: #f0f0f0;
-      border-radius: 0.44rem;
+      border: none;
+      border-radius: 30px;
       background-image: url("http://m.dilidili.wang/dist/18may/images/search.png");
       background-repeat: no-repeat;
       background-position: left;
-      background-size: 0.44rem;
-      padding-left: 0.9rem;
-      background-position: 0.39rem 0.2rem;
-      font-size: 0.37rem;
+      background-size: 16px;
+      padding-left: 32px;
+      background-position: 12px;
+      font-size: 16px;
     }
   }
   .home-icon {

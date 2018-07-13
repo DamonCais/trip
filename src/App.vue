@@ -1,16 +1,16 @@
 <template>
-	<div id="app">
-		<!-- <Header v-if="!$route.meta.noHeader" /> -->
-		<div class="section">
+  <div id="app">
+    <!-- <Header v-if="!$route.meta.noHeader" /> -->
+    <div class="section">
 
-			<keep-alive>
-				<router-view v-if="$route.meta.keepAlive"></router-view>
-			</keep-alive>
-			<router-view v-if="!$route.meta.keepAlive"></router-view>
-		</div>
+      <keep-alive>
+        <router-view v-if="$route.meta.keepAlive"></router-view>
+      </keep-alive>
+      <router-view v-if="!$route.meta.keepAlive"></router-view>
+    </div>
 
-		<Footer v-if="!$route.meta.noFooter"></Footer>
-	</div>
+    <Footer v-if="!$route.meta.noFooter"></Footer>
+  </div>
 </template>
 
 <script>
